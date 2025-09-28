@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>AutoMail 😈</title>
+    <style>
+        /* Reset simples */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #fff4e6;
+            color: #3e3e3e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #ff6600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        form {
+            background: #fff1e0;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ffb266;
+            font-size: 1rem;
+            resize: vertical;
+        }
+
+        input[type="file"] {
+            border: 1px solid #ffb266;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #fff8f0;
+            cursor: pointer;
+        }
+
+        button {
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #e65500;
+        }
+
+        .flash {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+        }
+
+        .result, .history {
+            background: #fff8f0;
+            border: 1px solid #ffb266;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .result h2, .history h2 {
+            color: #ff6600;
+            margin-bottom: 15px;
+        }
+
+        .result p, .history p {
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .history-item {
+            border-top: 1px solid #ffb266;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            textarea {
+                font-size: 0.9rem;
+            }
+
+            button {
+                font-size: 0.9rem;
+            }
+
+            form, .result, .history, .flash {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>AutoMail 😈</h1>
+    <form method="POST" action="/" enctype="multipart/form-data">
+        <textarea name="email_text" rows="10" placeholder="Cole aqui o email...">{{ email_text }}</textarea>
+        <input type="file" name="email_file" accept=".txt,.pdf">
+        <button type="submit">Processar</button>
+    </form>
+
+    <!-- Flash message -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Resultado do processamento -->
+    {% if result %}
+        <div class="result">
+            <h2>Resultado</h2>
+            <p><b>Email:</b> {{ result.email }}</p>
+            <p><b>Categoria:</b> {{ result.categoria }}</p>
+            <p><b>Resposta sugerida:</b> {{ result.resposta }}</p>
+        </div>
+    {% endif %}
+
+    <!-- Histórico -->
+    {% if history %}
+        <div class="history">
+            <h2>Histórico de Emails Processados</h2>
+            {% for item in history|reverse %}
+                <div class="history-item">
+                    <p><b>Email:</b> {{ item.email }}</p>
+                    <p><b>Categoria:</b> {{ item.categoria }}</p>
+                    <p><b>Resposta sugerida:</b> {{ item.resposta }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</body>
+</html>
